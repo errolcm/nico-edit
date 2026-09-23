@@ -1,7 +1,7 @@
 interface:
   display_name: "Dealership Showroom Car Compositor"
-  short_description: "Batch-composite cars into the fixed dealership showroom."
-  default_prompt: "Use $dealership-showroom-compositor to process every image under autos/vehicle-folder/ into a native-size showroom image using background.png as the locked plate; preserve the exact car and interior/detail framing, replace outdoor lighting and reflections with warm showroom cues, and write matching results under output/vehicle-folder/."
+  short_description: "Adapt vehicle photos to the dealership showroom mood."
+  default_prompt: "Use $dealership-showroom-compositor to process every vehicle photo under autos/ into a 1536×1024 showroom image. Keep each source car's viewpoint, framing, apparent size, details, and original plate; use background.png as a visual guide and add the dealership logo only where it fits naturally. Write the results under output/."
 
 policy:
   allow_implicit_invocation: true

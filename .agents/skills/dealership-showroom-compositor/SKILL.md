@@ -1,161 +1,55 @@
 ---
 name: dealership-showroom-compositor
-description: Process every vehicle image under autos into a photorealistic image that looks photographed inside the fixed background.png showroom, preserving exact vehicle identity, source framing where appropriate, and showroom branding while replacing source-scene lighting and reflections.
+description: Turn vehicle photos under autos/ into 1536×1024 dealership-showroom images, keeping each source photo's vehicle, viewpoint, and framing while using background.png as a visual guide.
 ---
 
-# Dealership showroom car compositor
+# Dealership showroom compositor
 
-## Mission
+## Purpose and inputs
 
-This skill is the repository's workflow for turning a batch of vehicle photographs into consistent dealership-showroom imagery.
+Process each supported vehicle image in `autos/<vehicle>/` into a believable showroom photograph. Use the images in one vehicle folder together to check the vehicle's identity and details.
 
-For every supported image in `autos/<vehicle>/`, create a corresponding image that looks as though that photograph was taken inside the exact showroom shown in `background.png`.
+The **original vehicle photo is the primary image**. Keep its camera view, vehicle position and apparent size, crop, and visible vehicle details. `background.png` is a guide to the dealership's dark showroom mood, warm lighting, and tiled floor. It is not a locked plate or a camera template. Any images in `test/` are previous outputs to critique, not approved visual targets or substitute vehicle references.
 
-The central distinction is:
+Write a 1536×1024 PNG for each successful source under `output/<vehicle>/`, with a filename traceable to the source. Avoid overwriting outputs when source stems collide. Do not alter `autos/`, `background.png`, `logo.png`, or `test/`. If `autos/` has no vehicle photos or `background.png` is missing, report that and stop. One unusable photo must not halt the rest of the batch.
 
-- The vehicle folder supplies identity evidence, materials, details, and—especially for interior/detail photos—the subject and viewpoint.
-- `background.png` supplies the authoritative showroom, camera, lighting environment, floor geometry, and branding.
-- The vehicle photograph's original environment, ground, shadows, highlights, and reflections are not identity and must not be carried into the result.
+Use the available image-editing capability when the inputs exist; routine processing does not require per-image confirmation.
 
-Use the available image-editing capability automatically when the required inputs are present. Do not ask for per-image confirmation.
+## Composition: follow the source camera
 
-## Input and output contract
+Inspect each original photo before choosing a showroom treatment. Preserve the visible side of the car, the viewing height, perspective, pose, and relative placement in frame. Do not rotate the car into a standard three-quarter view, invent unseen bodywork, or shrink or enlarge it to fit a predetermined staging spot. If the source intentionally crops part of the vehicle, retain that crop rather than generating the missing part.
 
-- The only supported batch input root is `autos/`.
-- Each vehicle is a folder directly below it: `autos/<vehicle>/`.
-- Each vehicle folder may contain multiple exterior, interior, and detail photographs. Use the whole folder as one identity set; do not treat its images as unrelated cars.
-- The required showroom plate is `background.png` at the repository root. Use its native canvas, currently 1536×1024, for every output.
-- Write successful results under the mirrored path `output/<vehicle>/`, keeping each source basename traceable.
-- Do not modify source images or `background.png`.
-- Process supported raster images and ignore non-image metadata or sidecar files. One bad source must not stop the rest of the batch.
-- If `autos/` is missing or empty, or `background.png` is missing, stop and report the missing input. Do not fall back to another directory, loose files, a different showroom, or invented references.
-- If a source cannot pass quality control after the allowed correction, do not write a misleading output; report that source and the failure reason.
-- Do not use web images or substitute vehicles, showrooms, logos, or architectural elements.
+Adapt the surrounding room to the source camera. Use the literal `background.png` scene only when its viewpoint and floor geometry fit naturally. Otherwise create a plausible variation with the same dark dealership atmosphere, warm overhead light, and floor material. The room layout, wall visibility, spotlight positions, and framing may vary to suit the source angle. Do not force a wall, horizon, or wide room view behind a source that could not have photographed one.
 
-## Reference roles
+For source shapes other than 3:2, scale proportionally and extend the surrounding scene to reach 1536×1024. Do not stretch the car, crop away source vehicle content, or materially change its prominence. If the source shows a close-up, keep it a close-up.
 
-### `background.png` — locked showroom plate
+### Exterior photos
 
-Treat `background.png` as the fixed base scene and camera. Preserve its pixels everywhere outside the vehicle and the smallest physically necessary local edit area for occlusion, contact shadow, and floor reflection.
+- Replace the original surroundings and ground with a showroom scene consistent with the source perspective. Keep vehicle geometry and identity anchored to the original pixels and the other photos in its folder.
+- Give every tire that is visible a convincing contact patch. Project tile seams and soft shadows on the same floor plane; occlude seams behind the car and tires.
+- Keep one implied physical tile size across the batch. Apparent tile width may change with camera depth and perspective, but must remain plausible relative to the vehicle and consistent between results. Avoid oversized or miniature tiles.
+- Add floor reflection only when the floor finish and camera angle support it. Keep it subdued and perspective-correct.
 
-Do not regenerate, redesign, resize, crop, reframe, zoom, recolor, or improve the wider plate. Preserve exactly what is actually present, including:
+### Interior and detail photos
 
-- ceiling, wall, floor, tile seams, and wall/floor boundary
-- warm spotlights and their falloff
-- exposure, gradients, texture, and photographic noise
-- dealership branding, logo geometry, lettering, and placement
+Keep the original close-up viewpoint, subject, and crop. Change visible outside scenery or surrounding surfaces only where they could naturally appear through windows, doors, or frame edges. Match the showroom's warm lighting and material reflections without turning a detail into a full-car image or inventing a wide room behind it.
 
-Keep `NICO ALBLAS`, `NA`, and `AUTOMOBIELEN` readable and unchanged. Do not redraw or regenerate the logo. Do not invent furniture or other objects that are not in the plate.
+## Vehicle and lighting fidelity
 
-### Vehicle folder — identity set
+Preserve the source vehicle's make, model, body shape, proportions, paint, wheels, trim, lights, glazing, badges, and **original license plate**. Preserve visible interior materials, controls, and stitching in close-ups. Use other photos in the same vehicle folder to resolve uncertain details; never borrow details from a different car. Do not add dealership plates, accessories, or logos to the vehicle.
 
-Use every image in the vehicle folder to resolve the same car's identity and details. Preserve, where visible and supported by the references:
+Match the subject to the new room with restrained, photographic changes to exposure, color temperature, shadow, and reflections. Remove clearly recognizable outdoor scenery from glass or glossy paint when it can be replaced without distorting the vehicle. Do not repaint the car, erase its shape-defining highlights, or regenerate identity-bearing parts to achieve a uniform lighting effect. The result should look photographed in the showroom, without a cutout edge, halo, artificial rim light, or glossy CGI finish.
 
-- make, model, generation, body style, proportions, and wheelbase
-- paint color, finish, trim, and exterior package
-- wheel design, tire proportions, grille, lamps, bumpers, glazing, mirrors, handles, and roof details
-- badges, lettering, plates, vents, moldings, chrome, black trim, and interior materials
+## Dealership logo
 
-Never merge details from different vehicles. Do not redesign, beautify, restyle, add accessories, remove features, or replace the source vehicle with a similar one. Preserve the source plate and badges; never add an implicit dealership plate or logo.
+Decide from the **source photo's camera and background** whether a believable, visible wall area exists for the dealership logo. Show it only when it fits that geometry, scale, and composition. `logo.png` supplies the emblem; `background.png` shows the complete sign with its lettering. Keep their actual shapes and the exact `NICO ALBLAS`, `NA`, and `AUTOMOBIELEN` wording. Do not generate approximate letters, a warped emblem, or a new brand mark. If a clean, legible placement is not possible, omit the logo. Never move or reshape the car merely to make room for it.
 
-The vehicle's material and finish are identity. Its original outdoor illumination and reflections are not.
+## Workflow and acceptance
 
-## Exterior/full-vehicle images
+1. Inventory `autos/`, inspect each vehicle folder as one identity set, and map each source to a distinct output path.
+2. For each photo, note its vehicle viewpoint, crop, apparent size, camera height, visible background, and floor perspective. Decide how much of the showroom can plausibly be visible and whether the logo can fit.
+3. Edit from the source photo as the primary image, using `background.png` for room character and tile scale. Keep protected vehicle details and the original plate intact.
+4. Compare the result with the source and other photos of that car. Check vehicle identity, view, crop, apparent size, floor perspective and tile scale, tire contact, lighting, edge quality, and any logo. Correct a concrete failure locally and inspect again.
+5. Deliver only results that pass. Report any omitted source and the specific reason instead of writing a misleading image.
 
-For a source that shows the exterior or whole vehicle:
-
-1. Use `background.png` as the base plate.
-2. Analyze the plate's floor plane, horizon, vanishing directions, tile grid, wall/floor boundary, and open staging area.
-3. Place the vehicle in the consistent center-left staging zone at a medium-to-rear depth so the logo and meaningful room context remain visible.
-4. Let the actual floor geometry and the vehicle's body type determine projected scale. Do not use a universal shrink factor, fixed frame-width percentage, or source pixel size as a scale reference.
-5. Keep the same showroom camera and general three-quarter presentation across the batch, adapting modestly for vehicle length, height, wheelbase, and body style.
-6. Reorient or reproject the vehicle when needed to match the showroom camera. Use the least aggressive plausible change; do not invent a dramatic unseen side merely to improve composition.
-7. Seat all four tires on the same receding floor plane. The car must have believable ground clearance, wheel geometry, and contact with the tiles.
-
-Prefer a position that leaves the dealership branding unobstructed whenever a physically plausible option exists. Do not move the logo or background to accommodate the car.
-
-## Interior and detail images
-
-For a source that shows the cabin or a detail such as a dashboard, seat, wheel, lamp, or trim:
-
-- Preserve the source subject, viewpoint, framing, and recognizable scale.
-- Keep the output on the native `background.png` canvas, but do not force a wide room view behind a close-up where a real camera could not see it.
-- Replace only the visible original surroundings where geometrically possible. Let the showroom appear through windows, doors, or natural frame edges only when that is physically plausible.
-- Use the showroom as the environmental and lighting reference even when little of it is visible: match its exposure, warm color temperature, contrast, reflections, and depth cues.
-- Do not turn an interior/detail photograph into a newly invented exterior vehicle photograph.
-- Preserve interior materials, trim, controls, stitching, badges, and other identity-bearing details; do not combine incompatible interiors from different references.
-
-## Remove source-scene lighting and reflections
-
-The result must not retain evidence that the source car was photographed outdoors or under unrelated lighting. Replace, do not merely tint, the source environment on the vehicle.
-
-Remove or replace:
-
-- sky, clouds, trees, roads, lane markings, buildings, open-air horizons, and daylight spill
-- blue or cool outdoor ambient light
-- source-camera glare and highlights that reveal the original location
-- source ground, cast shadow, horizon, dirt, and road or pavement reflection
-
-Rebuild the vehicle's visible illumination from the showroom plate:
-
-- warm overhead spotlight highlights on paint, roof, hood, glass, chrome, and glossy trim
-- dark-wall and tiled-floor reflections appropriate to the car's material
-- showroom-matched exposure, white balance, contrast, sharpness, and noise/grain
-- no artificial rim light, studio setup, HDR treatment, or CGI sheen absent from the plate
-
-Preserve the car's paint color and material response while changing the environment reflected in it. Outdoor reflections in windows, paint, chrome, or mirrors are a hard failure even if the vehicle geometry is correct.
-
-## Grounding and floor interaction
-
-For exterior vehicles, integrate the car into the existing tile plane rather than painting a generic shadow beneath it:
-
-1. Use the darkest, tightest occlusion at each tire contact patch and directly under the rocker panels.
-2. Add a broader, soft shadow consistent with the warm overhead lights.
-3. Add a low-contrast, diffused floor reflection aligned to the tile perspective and softened with distance.
-4. Keep the original floor seams and reflections around the car. Occlude seams only where the vehicle physically covers them; never draw tile lines through tires or bodywork.
-
-The reflection must remain secondary to the car and must not be mirror-like, copied from the source, or strong enough to erase the tile pattern. Do not use a single uniform black shadow, halo, floating tires, or a cutout edge.
-
-## Mandatory workflow
-
-1. Inventory `autos/` and map every source image to its vehicle folder and output path.
-2. Inspect the complete vehicle folder as an identity set and classify each image as exterior/full-vehicle or interior/detail.
-3. Lock the original `background.png` plate and infer its camera and floor geometry before editing.
-4. Perform the smallest appropriate masked edit: exterior images use the showroom plate as the base; interior/detail images preserve their subject viewpoint and reveal showroom context only where plausible.
-5. Remove source-scene ground, lighting, and reflections; relight and ground the subject using the showroom cues above.
-6. Run the quality-control checklist below against both the complete vehicle identity set and the untouched background.
-7. If a hard failure is found, make one focused corrective pass using the original background and source references. Do not broadly regenerate the scene.
-8. Deliver only passing outputs and report any omitted source with its reason.
-
-## Quality control
-
-Reject or correct an output if any of the following is visible:
-
-- any change to the wider showroom, floor pattern, spotlights, wall texture, logo, or lettering
-- an added, removed, substituted, or distorted vehicle identity detail
-- outdoor sky, trees, road, building, daylight, blue ambient light, or source-camera reflection
-- source ground, source shadow, or source reflection carried into the showroom
-- a vehicle that is too near, too dominant, or inconsistent with the fixed staging zone without a geometric reason
-- inconsistent showroom camera, floor perspective, wheel ellipses, vehicle height, or depth
-- tires not sharing one floor plane, implausible ground clearance, floating/intersecting geometry, or missing contact occlusion
-- mirror-like or misaligned floor reflection, tile seams drawn through the vehicle, haloing, or an obvious cutout
-- interior/detail framing replaced by an invented exterior view or an impossible wide-room background
-- mismatched exposure, white balance, sharpness, contrast, or photographic noise
-- AI-generated, CGI, over-sharpened, pasted, or synthetic appearance
-
-When correcting, change only the failing region. Always preserve the original plate, exact car identity, source detail framing where applicable, and all unrelated pixels.
-
-## Priority order
-
-Resolve conflicts in this order:
-
-1. Preserve the original showroom plate and branding outside the local edit area.
-2. Preserve the exact vehicle identity, materials, and source details.
-3. Preserve the appropriate source framing for interior/detail images and the fixed showroom camera for exterior images.
-4. Achieve physically plausible floor placement, scale, perspective, and grounding.
-5. Replace source-scene lighting and reflections with showroom-consistent environmental cues.
-6. Improve composition and polish only when the preceding requirements are already satisfied.
-
-## Output behavior
-
-Write one corresponding result per passing source image under `output/<vehicle>/`, without changing the source files. Keep the outputs traceable to their source basenames and report any source that could not pass.
+Reject an image if it changes the car's visible details or plate; changes its viewpoint, crop, or prominence without a source-based reason; uses room geometry or tile scale inconsistent with the source camera; floats above the floor; contains obvious outdoor scenery/reflections; alters or invents the logo; or looks pasted, synthetic, or heavily regenerated.
