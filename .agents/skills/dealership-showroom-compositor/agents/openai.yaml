@@ -1,7 +1,7 @@
 interface:
   display_name: "Dealership Showroom Car Compositor"
-  short_description: "Adapt vehicle photos to the dealership showroom mood."
-  default_prompt: "Use $dealership-showroom-compositor to process every vehicle photo under autos/ into a 1536×1024 showroom image. Keep each source car's viewpoint, framing, apparent size, details, and original plate; use background.png as a visual guide and add the dealership logo only where it fits naturally. Write the results under output/."
+  short_description: "Create showroom images while preserving visible car details and adding a fixed logo overlay."
+  default_prompt: "Use $dealership-showroom-compositor to process every supported photo under autos/ using background.jpeg as a loose showroom guide. Preserve each source's visible car content, colors, view, crop, and size; allow only plausible lighting and reflection changes, and never invent unseen parts. Write 1536×1024 PNGs under output/<vehicle>/ and add the original transparent black logo.svg, about 160 px wide and 32 px from the left and bottom edges, to every output, even if it overlaps the car."
 
 policy:
   allow_implicit_invocation: true
