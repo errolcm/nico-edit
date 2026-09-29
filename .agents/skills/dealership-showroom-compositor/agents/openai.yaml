@@ -1,7 +1,7 @@
 interface:
   display_name: "Dealership Showroom Car Compositor"
-  short_description: "Create showroom images while preserving visible car details and adding a fixed logo overlay."
-  default_prompt: "Use $dealership-showroom-compositor to process every supported photo under autos/ using background.jpeg as a loose showroom guide. Preserve each source's visible car content, colors, view, crop, and size; allow only plausible lighting and reflection changes, and never invent unseen parts. Write 1536×1024 PNGs under output/<vehicle>/ and add the original transparent black logo.svg, about 160 px wide and 32 px from the left and bottom edges, to every output, even if it overlaps the car."
+  short_description: "Anchor each car in the showroom, preserve details, and add the fixed logo overlay."
+  default_prompt: "Use $dealership-showroom-compositor to process every supported photo under autos/ using background.jpeg as a loose showroom guide. Choose one anchor view per vehicle folder to set the car's fixed showroom position and heading; treat other photos as the photographer moving around that stationary car, rendering the room from each source perspective. Preserve each source's visible car content, colors, crop, and details; allow only plausible lighting and reflection changes, and never invent unseen parts. Write 1536×1024 PNGs under output/<vehicle>/ and add the original transparent black logo.svg, about 160 px wide and 32 px from the left and bottom edges, to every output, even if it overlaps the car."
 
 policy:
   allow_implicit_invocation: true

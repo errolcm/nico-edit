@@ -1,6 +1,6 @@
 ---
 name: dealership-showroom-compositor
-description: Turn vehicle photos under autos/ into 1536×1024 showroom images using background.jpeg as a loose guide, preserving each photo's visible car and adding logo.svg as a fixed lower-left overlay.
+description: Turn vehicle photos under autos/ into 1536×1024 showroom images using background.jpeg as a loose guide; keep each car in one showroom position as the camera moves, preserve visible details, and add the fixed logo.svg overlay.
 ---
 
 # Dealership showroom compositor
@@ -10,6 +10,8 @@ description: Turn vehicle photos under autos/ into 1536×1024 showroom images us
 Process each supported photo in `autos/<vehicle>/` as its own image. Other photos in the same folder may help identify the vehicle, but each source photo determines what is visible in its frame. Treat `test/` images only as prior outputs to critique, never as approved targets or substitutes for source photos.
 
 Use `background.jpeg` as a loose guide to a bright showroom with large windows, white surfaces, and a pale reflective stone floor. Adapt the room to the source camera; do not use the reference as a locked plate. Outdoor scenery is allowed beyond plausible showroom windows.
+
+For each vehicle folder, first compare its original photos with `background.jpeg` and choose the view whose camera angle, height, and floor perspective fit the reference best. Use that photo as the spatial anchor for the car's fixed place and heading in the showroom. Treat the car as stationary at that same real-world position across the folder: other photos show the photographer moving around it. Render each room view from its source camera, so walls, windows, and floor perspective may look quite different while remaining a plausible extension of the same showroom. Do not translate, rotate, or re-stage the car between outputs. The anchor sets showroom placement only; each source photo remains authoritative for its own crop and visible car details.
 
 Write a 1536×1024 PNG per successful source under `output/<vehicle>/`, using a source-traceable filename and avoiding collisions. Do not alter `autos/`, `background.jpeg`, `logo.svg`, or `test/`. If there are no supported photos, or either required reference (`background.jpeg` or `logo.svg`) is missing, report that and stop. If one photo is unusable, omit it with the reason and continue the batch.
 
